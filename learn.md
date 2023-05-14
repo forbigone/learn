@@ -363,6 +363,8 @@ str3.append(str4,2,3); //从第二个开始到结束的3个字符
 
 //2.替换
 string s2=s.replace(0,1,"A"); // 0到1位替换 a->A
+#include<algorithm>
+replace(s2.begin(), s2.end(), 'a', 'A'); // 替换指定单字符
 
 //3.查找
 int pos1=s.find("a",0); // 从0开始左向右寻找字符第一个次出现的位置
@@ -372,6 +374,8 @@ int pos2=s.rfind("v",s.size()); // 从s.size开始右向左，查不到返回-1
 string s="234"；
 s.insert(0,"01"); //从0位置插入
 s.erase(0,2);     //删除[0,2)
+#include<algorithm>
+s.erase(remove(s.begin(),s.end(),'0'),s.end());  // 删除指定字符
 
 //5.截取
 string s2=s.substr(0,2); //截取 从0开始，长度为2的字符串
