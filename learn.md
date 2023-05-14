@@ -351,7 +351,7 @@ bool cmp(Student s1, Student s2) {  // 自定义排序
 
 ```
 
-### string
+### 4.string
 
 ```c++
 //1.拼接
@@ -384,6 +384,39 @@ string s2=s.substr(0,2); //截取 从0开始，长度为2的字符串
 string s="123"
 const char* c = s.c_str();
 int a = atoi(c);  //atoi函数跳过前面的空白字符，直到遇上数字或正负符号才开始做转换，而再遇到非数字才结束转换，无法转返回0
+
+//7.切割
+stringstream ss(str);
+string item;
+vector<string> elems;
+while (getline(ss, item, '')) {
+	elems.push_back(item);
+}
+```
+
+
+
+### 5.移位
+
+```c++
+// 10.0.3.193 -> 167969729
+unsigned int output_10 = 0;  // 占4个字节，可以移位
+output_10 += 10 << 24;
+output_10 += 0 << 16;
+output_10 += 3 << 8;
+output_10 += 193 << 0;
+
+// 167773121 -> 10.3.3.193
+int a = 0;
+unsign int = 167773121;
+a = ip_10 >> 24;
+cout << a << '.';
+a = (ip_10 >> 16) & 255;  // &位运算 167773121 与 0x00 00 00 ff相乘
+cout << a << '.';
+a = (ip_10 >> 8) & 255;
+cout << a << '.';
+a = (ip_10 >> 0) & 255;
+cout << a;
 ```
 
 
