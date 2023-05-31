@@ -246,6 +246,8 @@ for(it=v.begin();it!=v.end();it++){
 }
 v[1];  // 下标
 
+//倒序
+reverse(v.begin(). v.end())
 ```
 
 #### 2.2 set
@@ -296,6 +298,22 @@ it = m.find("z"); // 查看key是否存在
 if(it!=m.end())   // 如果查找失败，则返回end()函数所在的迭代器
     it->second;
 ```
+
+#### 2.4 queue
+
+```c++
+#include<queue>
+queue<int> q;
+
+q.push()   // 在队尾插入一个元素
+q.pop()    // 删除队列第一个元素
+q.size()   // 返回队列中元素个数
+q.empty()  // 如果队列空则返回true
+q.front()  // 返回队列中的第一个元素
+q.back()   // 返回队列中最后一个元素
+```
+
+
 
 #### 2.x
 
@@ -439,6 +457,52 @@ void swap(int *p1, int *p2)
 //引用传参: 引用传递，传递的是变量本身能保证参数传递中不产生副本，提高传递的效率，且通过const的使用，保证了引用传递的安全性。
 void swap(int &p1, int &p2)
 ```
+
+### 7.二叉树
+
+```c++
+// 自定义结构体 二叉树
+struct TreeNode {
+    int val;  // 当前节点的值
+    TreeNode *left;  // 左子树节点指针
+    TreeNode *right;  // 右子树节点指针
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}  //创建节点TreeNode* T1 = new TreeNode(8);
+};
+
+//dfs深度优先搜索
+void Traversal(TreeNode* root) {
+    if(!root)
+        return;
+    // cout<<root->val<<" "; 先序遍历（根，左，右）
+    preorderTraversal(root->left);
+    // cout<<root->val<<" "; 中序遍历（左，根，右） 
+    preorderTraversal(root->right);
+    // cout<<root->val<<" "; 后序遍历（左，右，根） 
+}
+
+//bfs广度优先搜索
+void levelOrder(TreeNode *root){
+    queue<TreeNode*> q;
+    q.push(root);
+    while(!q.empty()){
+    	int n=q.size();
+        for(int i=0;i<n;++i){
+            TreeNode *temp=q.front();
+            if(temp){
+                q.push(temp->left);
+                q.push(temp->right);
+                cout<<temp->val<<" ";
+            }
+            q.pop();
+         }
+    }
+}
+
+```
+
+
+
+
 
 
 
