@@ -200,7 +200,7 @@ hex(int(input()，10))	# 10->16
 
 
 
-## C++
+## C++上机
 
 ### 1.输入输出
 
@@ -637,39 +637,24 @@ char * (指针)	   4
 //9. include
 #include ".h"	// 从当前项目目录下搜寻
 #include <.h>	// 从系统include目录下，可以在环境变量下指定 
+  
         
-//10. extern
-    //声明外部变量，供其它文件使用
-	//a.h
-        extern int a; // 声明，在外部文件定义
-		extern int func();
-	//b.cpp
-		int a = 1;  // 定义（只能在一个文件下定义）
-		int func(){...}
-	//c.cpp
-		printf(a);  // 调用
-		func(a);
+//10. 指针
+int  var = 20;     
+int * ptr = &var;   
+int ** pptr = &ptr; 
 
-	 //extern "C"
-		{ 
-			#include "b.h"  //在CPP文件中include C头文件时，需要使用extern "C",
-		} //C语言没有函数重载这一特性，C和C++编译这个函数的符号名可能类不一样。
+Value of var: 20
+Value of &var: 0x7ffce63490bc    (var的地址)
 
+Value of ptr: 0x7ffce63490bc    (等于&var)
+Value of *ptr: 20        (等于var)
+Value of &ptr: 0x7ffce63490b0    (ptr的地址)
 
-//11. const
-	1.const修饰普通类型的变量
-        const int a = 1; // a的值不能被改变
-    2.const 修饰指针变量
-        const int *p = 8; //指针指向的内容 8 不可改变。简称左定值，因为 const 位于 * 号的左边。
-        int a = 8;
-        int* const p = &a;
-		*p = 9; // const 指针 p 其指向的内存地址不能够被改变，但其内容可以改变。简称，右定向。因为 const 位于 * 号的右边。
-    3.const参数传递和函数返回值
-        const char* func(const char* c)//保护参数和返回值
-    4.const修饰类成员函数
-        class{
-            int func() const {}; // 不能改变成员变量
-        }
+Value of pptr: 0x7ffce63490b0    (等于&ptr)
+Value of *pptr: 0x7ffce63490bc    (等于ptr, 等于&var)
+Value of **pptr: 20        (等于*ptr, 等于var)
+Value of &pptr: 0x7ffce63490a8    (pptr的地址)
 ```
 
 ### 内存
@@ -680,6 +665,23 @@ char *buf = new char[20];
 delete[] buf;  	// new/delete要匹配
 char *buf_ = (char *)mallor(20);  // 显式指定字节数
 free(buf_);		// mallor/free
+
+
+//2. 内存管理
+bss段
+	通常是指用来存放程序中未初始化的全局变量的一块内存区域。初始化为0的全局变量会先放在bss
+data段
+	数据段通常是指用来存放程序中已初始化的全局变量的一块内存区域。有初值的全局变量和static变量在data区
+text段
+	代码段通常是指用来存放程序执行代码的一块内存区域。
+heap
+	堆是用于存放进程运行中被/*动态*/分配的内存段，它的大小并不固定，可动态扩张或缩减。
+	当进程调用malloc等函数分配内存时，新分配的内存就被动态添加到堆上（堆被扩张），
+    当利用free等函数释放内存时，被释放的内存从堆中被剔除（堆被缩减）。
+stack
+	栈又称堆栈，是用户存放程序临时创建的局部变量，
+	在函数被调用时，其参数（函数形参）也会被压入发起调用的进程栈中，并且待到调用结束后，函数的返回值也会被存放回栈中。
+
 ```
 
 
@@ -706,10 +708,50 @@ free(buf_);		// mallor/free
 
 
 如果基类的析构函数是虚函数，那么就会继续调用派生类的析构函数~Derived()；
+    
 //2. inline
 普通函数频繁调用的过程消耗栈空间，每次调用函数都需要压栈，然后出栈。
 为了消除函数调用的时空开销，在编译时将函数调用处用函数体替换，类似于C语言中的宏展开。在函数调用处直接嵌入函数体。
 可以理解为内联函数的关键词是：替换
+    
+    
+//3. extern
+    //声明外部变量，供其它文件使用
+	//a.h
+        extern int a; // 声明，在外部文件定义
+		extern int func();
+	//b.cpp
+		int a = 1;  // 定义（只能在一个文件下定义）
+		int func(){...}
+	//c.cpp
+		printf(a);  // 调用
+		func(a);
+
+	 //extern "C"
+		{ 
+			#include "b.h"  //在CPP文件中include C头文件时，需要使用extern "C",
+		} //C语言没有函数重载这一特性，C和C++编译这个函数的符号名可能类不一样。
+
+
+//4. const
+	1.const修饰普通类型的变量
+        const int a = 1; // a的值不能被改变
+    2.const 修饰指针变量
+        const int *p = 8; //指针指向的内容 8 不可改变。简称左定值，因为 const 位于 * 号的左边。
+        int a = 8;
+        int* const p = &a;
+		*p = 9; // const 指针 p 其指向的内存地址不能够被改变，但其内容可以改变。简称，右定向。因为 const 位于 * 号的右边。
+    3.const参数传递和函数返回值
+        const char* func(const char* c)//保护参数和返回值
+    4.const修饰类成员函数
+        class{
+            int func() const {}; // 不能改变成员变量
+        }
+
+	5. 
+        typedef int d;
+		typedef d* D;
+		const D did; // 相当于int* const did 容易混淆
 ```
 
 ### 构造析构
@@ -727,6 +769,13 @@ free(buf_);		// mallor/free
 构造函数可以重载，但不能为虚函数
     
 使用初始化列表对成员变量进行初始化时，初始化顺序与列表顺序无关，只与类内定义的顺序有关；
+    
+在构造函数里调用虚函数会报错，因为构造函数执行前，虚函数的映射还没建立
+    
+不能在构造函数使用可能会失败的语句，如：
+    pthread_create() 
+    socket()
+    open()
     
 //3. 拷贝构造函数
     class Class_{
@@ -763,6 +812,16 @@ free(buf_);		// mallor/free
 
 	5. 派生类的拷贝构造函数
     C::C(const C &c1): B(c1) {…}
+
+
+//4. 移动构造函数
+复制构造：在对象被复制后临时对象和复制构造的对象各自占有不同的同样大小的堆内存，就是一个副本。
+移动构造：就是让这个临时对象它原本控制的内存的空间转移给构造出来的对象，这样就相当于把它移动过去了。
+class_name(class_name && ) // 右值  std::move(c)可以强制转成右值
+    Class_(Class_&& c){
+        a = c.a;
+	    c.a= null;
+	}
 ```
 
 ### 继承
@@ -800,7 +859,17 @@ free(buf_);		// mallor/free
 
 ### 异常
 
-TODO
+```c++
+// 异常捕获
+try{
+    throw BarException();
+}
+catch(const Fooexception& e){ // 异常捕获选择const &
+}
+  
+```
+
+
 
 ### 命名空间
 
@@ -813,6 +882,26 @@ using declaration	//声明: 是把名字空间的某个名字引入到当前作�
 
 // 类的声明只能是using declaration
 // 冲突：命名空间存在相同成员元素，存取时不会有冲突，使用时才会
+
+int a = 1;
+namespace Outer{
+    int a = 2;
+}
+namespace Outer{
+    namespace Inter{
+    	int a = 3;
+}
+}
+
+using namespace Outer;
+
+int main(){
+    int a = 4;
+    cout << a; 				// 4临时变量
+    cout << ::a;			// 1全局变量
+    cout << Outer::a;		// 2
+    cout << Outer::Inter::a;// 3
+}
 ```
 
 ### 函数指针
@@ -840,6 +929,437 @@ int function(int，int)     //返回的是int型数据。
 int *fun(int x, int y)  //指针函数的定义
 int* fun(int x, int y)   //指针函数的定义
 ```
+
+### 智能指针
+
+```c++
+//1. unique_ptr
+	# unique_ptr对象包装一个原始指针，并负责其生命周期。当该对象被销毁时，会在其析构函数中删除关联的原始指针。
+	std::unique_ptr<Task> taskPtr(new Task(5));
+	// make_unique
+	# make_unique函数使用起来比直接用new操作符分配内存然后传递给unique_ptr更加安全，能够避免内存泄漏等问题。
+	auto taskPtr = std::make_shared<Task>(5);
+
+//2. shared_ptr
+	# 不同的shared_ptr对象可以与相同的指针相关联，并在内部使用引用计数机制来实现这一点。
+	std::shared_ptr<int> p1 = std::make_shared<int>();
+	*p1 = 78; // p1.use_count() = 1
+	std::shared_ptr<int> p2(p1); // p2.use_count() = p1.use_count() = 2
+
+```
+
+
+
+### 单例模式
+
+```C++
+单例模式:在整个系统生命周期内，保证一个类只能产生一个实例，确保该类的唯一性。
+
+//1. 懒汉式：系统运行中，实例并不存在，只有当需要使用该实例时，才会去创建并使用实例。这种方式要考虑线程安全。
+class CSingleton  
+{  
+public:  
+    static CSingleton* GetInstance()  
+    {  
+         if ( m_pInstance == NULL )    
+             m_pInstance = new CSingleton();  
+         return m_pInstance;  
+    }  
+private:  
+    CSingleton(){};  
+    static CSingleton * m_pInstance;  
+};  
+
+//2. 饿汉式：系统一运行，就初始化创建实例，当需要时，直接调用即可。这种方式本身就线程安全，没有多线程的线程安全问题。
+class CSingleton    
+{    
+public:    
+    static CSingleton * GetInstance()    
+    {    
+        static CSingleton instance;     
+        return &instance;    
+    } 
+private:    
+    CSingleton(){}; 
+};    
+```
+
+### 重载
+
+```c++
+C++规定重载运算符的操作对象至少有一个不是标准类型，而是用户自定义的类型， 比如不能重载 1+2
+// 对象操作符重载
+	//以全局函数的形式重载
+    friend Complex operator+(const Complex &c1, const Complex &c2);
+    //成员函数重载
+    Complex & operator+=(const Complex &c);
+```
+
+
+
+### Gtest
+
+```c++
+// TODO
+```
+
+### 华为C++规范
+
+```c++
+// 
+
+x = a + b & 5; // &优先级比+低
+
+
+// 动态内存
+auto ptr = std::make_unique() //使用make_unique 而不是new，delete
+    
+    
+// 常量
+constexpr int a = 0;
+#define A 0 //避免使用宏来定义常量
+
+
+// 枚举
+enum class myenum{
+} // 优先使用枚举类型而不是普通枚举 enum myenum
+
+
+// 继承转换
+Base* base_object;
+Derived* derived = dynamic_cast<Derived*>(base_object); // dynamic_cast强制转换
+
+
+// 模板
+模板的所有部分和显示特殊化都必须放在该模板本身所在的文件中
+比如在foo.h文件定义模板类Foo，template<>class FOO()显示特殊化也得在foo.h中
+    
+
+// vector
+std::vector<int> v;
+for(size_t i = 0; i < v.size(); ++i)
+    
+    
+// static、namespace
+针对cpp文件中不需要导出的变量、常量或函数，应该使用匿名namespace封装或者使用static修饰，更推荐namespace
+    
+    
+// 安全的成员函数
+void Print(const MyClass& obj); // 引用比指针更安全
+
+
+// 断言
+static_assert();
+
+
+// sprintf_s
+spritf_s(buf, sizeof(buf), 'input something %d', x);
+spritf_s(buf, sizeof(buf), 'input something %d%d', x, y);
+
+
+// 类型转换
+char 不能转 int
+int 可以转 char float
+    
+
+// 虚函数
+C++中，虚函数是动态绑定的，但函数的缺省参数却是在编译时就静态绑定的。这意味着你最终执行的函数是一个定义在派生类，但使用了基类中的缺省参数值的虚函数。为了避免虚函数重载时，因参数声明不一致给使用者带来的困惑和由此导致的问题，
+    规定所有虚函数均不允许声明缺省参数值！
+```
+
+### 测试
+
+```c++
+// 1.测试覆盖
+	语句覆盖：选择足够多的测试用例，使得程序中的每个可执行语句至少执行一次。
+	判定覆盖：通过执行足够的测试用例，使得程序中的每个判定至少都获得一次“真”值和“假”值，也就是使程序中的每个取“真”分支和取“假”分				支至少均经历一次，也称为“分支覆盖”。
+	条件覆盖：设计足够多的测试用例，使得程序中每个判定包含的每个条件的可能取值（真/假）都至少满足一次。
+	判定/条件覆盖：设计足够多的测试用例，使得程序中每个判定包含的每个条件的所有情况（真/假）至少出现一次，并且每个判定本身的判定				结果（真/假）也至少出现一次。
+	组合覆盖：通过执行足够的测试用例，使得程序中每个判定的所有可能的条件取值组合都至少出现一次。
+	路径覆盖：设计足够多的测试用例，要求覆盖程序中所有可能的路径。
+
+路径覆盖 > 条件组合 > 判定条件 > 条件覆盖 > 判定覆盖 > 语句覆盖  
+        
+        
+        
+//2 使用数据组合覆盖技术识别测试条件
+ 	EC		单一选择组合			每一个测试输入的每一个取值在所有组合中至少出现一次
+ 	BC		基本选择组合			以基本组合为基础，通过更改一个输入的取值创建新的组合
+ 	AC		全组合			  	每个测试输入的每个取值的所有可能组合
+ 	OA		正交数组		 	基于正交数组的组合方式
+ 	N:Wise	覆盖任意N个输入
+        	的全组合的组合方式	覆盖任意N个输入的全组合的组合方式
+        
+//3. TEST        
+TEST()当您想要为静态或全局函数或简单类编写单元测试时
+TEST_F()当您需要访问单元测试中的对象和子例程时
+TEST_P()当您想要使用参数编写测试时
+```
+
+### GDB
+
+```c++
+// 查看函数参数
+	b func
+    continue
+    Info args
+        
+// 死锁信息
+    info thread 
+        // 当前进程中所有线程的信息，包括线程 ID、状态、调用栈等信息。通过查看线程的调用栈，可以得知当前线程正在等待哪个互斥锁。
+        
+// 设置断点
+    # 普通断点
+	linenum	linenum 	是一个整数，表示要打断点处代码的行号。
+	filename:linenum	filename 表示源程序文件名；linenum 为整数，表示具体行数。
+	+ offset			+offset 表示以当前程序暂停位置（例如第 4 行）为准，向后数 offset 行处（第 6 行）打断点
+	- offset			-offset 表示以当前程序暂停位置为准，向前数 offset 行处（第 2 行）打断点。
+	function			function 表示程序中包含的函数的函数名，即 break 命令会在该函数内部的开头位置打断点
+	filename:function	filename 表示远程文件名；function 表示程序中函数的函数名。
+    # 条件断点
+    b src/main.cpp:127 if cnt==10	当满足一定条件时才会触发
+    # 数据断点
+    b *address  		当该地址上的内容发生改变时就会触发断点。
+        
+// 监视断点
+    对于监控 C、C++ 程序中某变量或表达式的值是否发生改变，watch 命令的语法非常简单，如下所示：
+		(gdb) watch cond
+	rwatch 命令：只要程序中出现读取目标变量（表达式）的值的操作，程序就会停止运行；
+	awatch 命令：只要程序中出现读取目标变量（表达式）的值或者改变值的操作，程序就会停止运行。
+        
+// 查看内容
+	x/<n/f/u> <addr>
+    	x：examine命令，查看内存地址中的值
+        n、f、u是可选的参数。
+        n 是一个正整数，表示显示内存的长度。
+		f 表示显示的格式。x 按十六进制格式显示变量。d 按十进制格式显示变量。
+		u 表示从当前地址往后请求的字节数。u参数可以用下面的字符来代替，b表示单字节，h表示双字节，w表示四字 节，g表示八字节。
+```
+
+### Cmake
+
+```cmake
+1. 添加头文件目录
+include_directories([AFTER|BEFORE] [SYSTEM] dir1 [dir2 ...])
+2. 添加需要链接的库文件目录
+link_directories(directory1 directory2 ...)
+3. 查找库所在目录
+find_library (<VAR> name1 [path1 path2 ...])
+4. 添加需要链接的库文件路径
+link_libraries(library1 <debug | optimized> library2 ...)
+5. 设置要链接的库文件的名称
+target_link_libraries(<target> [item1 [item2 [...]]] [[debug|optimized|general] <item>] ...)
+6. 为工程生成目标文件
+add_executable(<name> [WIN32] [MACOSX_BUNDLE]
+               [EXCLUDE_FROM_ALL]
+               source1 [source2 ...])
+               
+               
+7.添加编译选项 # 不一定生效
+add_compile_options（-g -Werror）
+```
+
+
+
+### STL性能
+
+| 容器名称 | 插入/删除                                | 查找   | 使用场景                          |
+| -------- | ---------------------------------------- | ------ | --------------------------------- |
+| vector   | 尾端：O（1）、非尾端P：O（N-P）          | O（1） | 需要快速查找，不需要频繁插入/删除 |
+| list     | O（1）                                   | O（N） | 需要频繁插入/删除，不需要快速查找 |
+| deque    | 首尾端：O（1）非首尾P：O（min（p， N-P） | O（1） | 较少使用，建议用list/vector       |
+| queue    | 只能尾端入、首端删除：O（1）             | 不支持 | FIFO（先进先出）                  |
+
+### 线程与锁
+
+```c++
+// 当多个线程同时对共享数据进行读或写操作时，会发生一些难以预料的事。
+
+# 利用两个线程来对同一个变量count进行10000次++操作。
+void mythread(int &num) {
+	for (int i = 0; i < 100000; i++) {
+		num++;
+	}
+}
+int count = 0;
+thread mythread1(mythread, ref(count));
+thread mythread2(mythread, ref(count)); // 最终count会远小于20000
+
+
+	//1. 互斥量
+mutex mymutex;
+void mythread(int &num) {
+	for (int i = 0; i < 100000; i++) {
+		lock_guard<mutex> my_lock(mymutex);
+		num++;	// count = 20000
+	}
+}
+
+
+
+	//2. 原子操作
+void mythread(atomic<int> &num) {
+	for (int i = 0; i < 100000; i++) {
+		num++;  // count = 20000
+	}
+}
+atomic<int> count = 0;
+
+
+
+// 互斥量mutex
+C++11提供如下4种语义的mutex：
+    std::mutex，独占的互斥量。
+    std::time_mutex，带超时的独占互斥量。
+    std::recursive_mutex，递归互斥量。
+    std::recursive_timed_mutex，带超时的递归互斥量。
+常用成员函数：
+    lock() 		——互斥量加锁。线程调用该函数后存在 3 种情况：1). 如果该互斥量当前没有被锁住，则调用线程将该互斥量锁住，直到调						用unlock之前，该线程一直拥有该锁；2). 如果当前互斥量被其他线程锁住，则当前线程会阻塞；3). 如果当前线程						重复加锁，则会产生死锁deadlock)。
+    unlock() 	——互斥量解锁。
+    try_lock() 	——尝试加锁，如果互斥量已被其他线程加锁则当前调用立即返回，不阻塞。
+
+    
+// 原子操作atomic
+优点
+    执行效率比互斥量更高
+    std::atomic来代表原子操作，是个类模板。其实std::atomic是用来封装某个类型的值的。
+局限性
+    一般只能用于变量的一些简单操作，如++、–、+=、-=、&=、|=、^=，其他操作不一定可以执行。
+    通常在一些计数场景用的多。
+    互斥量的加锁一般是针对一个代码段，而原子操作针对的一般都是一个变量。
+    
+    
+ 
+#当使用volatile 声明的变量的值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。 
+#volatile和多线程没有关系！！！
+```
+
+
+
+
+
+
+
+
+
+
+
+## 题库
+
+```c++
+/********************************************************************/
+// c++中的都是从右往左入栈的，在调用函数时，若参数需要运算则先运算，然后入栈，再调用函数。
+int AddNums(int a, int b){
+    cout << a << " " << b << endl;
+    return a + b;
+}
+
+int main(){
+    /*
+    1. 入栈顺序，参数从右往左入栈
+    2. 计算顺序，先入栈的先计算；计算完后再入栈
+    3. 传递的参数：实际变量，还是临时变量
+    */
+    int i = 2;
+    //1. 先计算，两次i++后i的值为4；传递的是实际变量i的值
+    cout << AddNums(++i, ++i) << endl;  // a = 4, b = 4, a + b = 8
+    //2. i++入栈的是i，然后执行i++，所以需要临时变量将i的值保存下来，再计算i++；++i先进行计算，入栈为变量i的值
+    cout << AddNums(++i, i++) << endl;  // a = 4, b = 2, a + b = 6
+    cout << AddNums(i++, ++i) << endl;  // a = 3, b = 4, a + b = 7
+    cout << AddNums(i++, i++) << endl;  // a = 3, b = 2, a + b = 5
+    cout << AddNums(++i, i) << endl;  // a = 3, b = 3, a + b = 6
+}
+/********************************************************************/
+
+
+
+
+/********************************************************************/
+// 判断条件从左到右。
+int main(){
+    int x = 1;
+    int y = 2;
+    if (++x >= 2 || y++ >= 2){ } // ||前半句执行了就结束了
+    cout << x << y << endl;  // x = 2, y = 2
+}
+/********************************************************************/
+
+
+
+
+/********************************************************************/
+// 数组指针和指针数组
+using Array = int(*)[10]	// 数组指针
+typedef int (*Array)[10]	// 数组指针
+# typedef int (Array*)[10];	// 申明方式错误！！！  *在变量的左边，类型的右边
+    
+using Array = int*[10]		// 指针数组
+typedef int *Array[10]		// 指针数组
+    
+    
+    
+char* p[10];				// 含有10个元素为char*的数组，即指针数组
+char (*p)[10];				// 指向char[10]数组的指针
+char** p[10];				// 含有10个元素为char**的数组，即含有10个指向char*的指针的数组
+char p[10];					// char数组
+char* (*p)[10];				// 指向含有10个元素为char*的数组的指针
+    
+/********************************************************************/
+
+
+
+
+/********************************************************************/
+// 不符合编程规范
+int a = 10;		// 不能用魔数，应该constexpr int A = 5;
+
+
+char str[10];
+cin.get(str, 5, 'd'); //读取5个字符，并且丢弃'd'字符之后的字符
+cout << str; // abcde -> abc   
+/********************************************************************/
+
+
+
+
+/********************************************************************/
+// 不同类型相加
+unsigned int a = 6;
+int b = -20;
+(a+b > 6) ? (true):(false) // int b 会转成无符号，因此和一定大于6
+/********************************************************************/
+
+
+
+
+/********************************************************************/
+// 
+	int var = 5;
+    static int base = 3;
+    auto func = [=]() mutable{
+        ++base;
+        ++var;
+        return base + var;
+    };
+    auto a = func();
+    auto b = func();
+    cout << a << " " << b << " " << var << " " << base << endl; // 10 12 5 5
+/********************************************************************/
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
