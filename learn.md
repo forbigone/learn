@@ -226,6 +226,7 @@ printf("%d",num); //%d、%f、%s、%c 是最常用的，它们分别是输出整
 ```c++
 #include<vector>
 vector<int> v[100];
+vector<int> v(26, 0);
 
 v.push_back(x) // 就是在vector容器v后面添加一个元素x
 v.pop_back()   // 可以删除vector的尾元素
@@ -236,7 +237,7 @@ v.insert(it, x)//用来向vector的任意迭代器it处插入一个元素x，
 v.insert(pos,first,last) //在 pos 位置之前，插入其他容器中位于 [first,last) 区域的所有元素(容器拼接)。
     					 //v.insert(v.end(), v1.begin(), v1.end());  // 将v和v1拼接在一起
     
-v.erase(it)          // 即删除迭代器为it处的元素：v.erase(v.begin() + 2);	//删除元素v[3]
+v.erase(it)          // 即删除迭代器为it处的元素：v. erase(v.begin() + 2);	//删除元素v[3]
 v.erase(first, last) // 即删除[first, last）内的所有元素：v.erase(v.begin(), v.end())即清空所有元素
 
 //输出
@@ -263,8 +264,12 @@ s.insert(1); // 插入元素
 *s.end() 　　　//返回set容器的最后一个元素
 s.empty() 　　//判断set容器是否为空
 s.size() 　　 //返回当前set容器中的元素个数
+
+// 查找
 s.count(x)   // x的个数（1或者0）
-    
+s.find(x) != s.end();
+
+// 删除
 s.clear()    //删除set容器中的所有的元素
 s.erase(x)   //删除元素x
 //输出
@@ -282,6 +287,7 @@ map为映射,也是常用的STL容器，map可以将任何基本类型（包括S
 #include<map>
 map<char, int> m; 
 m['c'] = 20;
+m.emplace('c', 20);
 
 map<char, int>::iterator it=m.begin();  // map会以键从小到大的顺序自动排序
 	cout << it->first;	      //it->first来访问键
@@ -293,10 +299,15 @@ m.clear() // 用来清空map中的所有元素
 m.erase(key) // key为要删除的映射的键
 m.erase(first, last) // first，last为迭代器的地址
 
+// 查看key是否存在
+m.count(key) == 1;
 map<char , int>::iterator it;
-it = m.find("z"); // 查看key是否存在
+it = m.find(key); 
 if(it!=m.end())   // 如果查找失败，则返回end()函数所在的迭代器
     it->second;
+
+// unorder_map 无序的map
+unorder_map<char, int> u_m; 
 ```
 
 #### 2.4 queue
@@ -311,6 +322,27 @@ q.size()   // 返回队列中元素个数
 q.empty()  // 如果队列空则返回true
 q.front()  // 返回队列中的第一个元素
 q.back()   // 返回队列中最后一个元素
+    
+    
+//优先队列 priority_queue
+//priority_queue<Type, Container, Functional>
+priority_queue<int> q;  // 默认vector，队首q.top()最大
+priority_queue<int,vector<int>,less<int>> q;	// 队首q.top()最大
+priority_queue<int,vector<int>,greater<int>>q;  // 队首q.top()最小
+// pair
+priority_queue<pair<int, int>>q;  // pair 先比较第一个int，再比较第二int
+// struct
+struct fruit {
+    string name;
+    int price;
+};
+struct cmp {
+    bool operator ()(fruit fl,fruit f2)
+    {
+        return f1.price > f2.price;
+    }
+};
+priority_queue<fruit,vector<fruit>,cmp> q; // 队首q.top().price最小
 ```
 
 
@@ -318,42 +350,50 @@ q.back()   // 返回队列中最后一个元素
 #### 2.x
 
 ```c++
-#include<algorithm>
-//1.排序
-sort(a.begin(),a.end()); //对a中的从a.begin()（包括它）到a.end()（不包括它）的元素进行从小到大排列
-//2.倒置
-reverse(a.begin(),a.end()); //对a中的从a.begin()（包括它）到a.end()（不包括它）的元素倒置，但不排列
-//3.复制
-copy(a.begin(),a.end(),b.begin()+1); //把a中的从a.begin()（包括它）到a.end()（不包括它）的元素复制到b中，从b.begin()+1的位置（包括它）开始复制，覆盖掉原有元素
-//4.查找
-find(a.begin(),a.end(),10); //在a中的从a.begin()（包括它）到a.end()（不包括它）的元素中查找10，若存在返回其在向量中的位置
+// pair<type1, type2> p;
+pair<type1, type2> p;
+pair<int, std::string> p1 = { 1, "kenny" };
+pair<int, char> p2 = std::make_pair(1, 'a');
+
+p.first  // 访问第一个元素
+p.second // 访问第二个元素
+
+
+// tuple
+tuple<type1, type2, type3, ...> t;   
+tuple<int, double, string> t1(1, 15.4, "James");
+tuple<int, double, string> t2 = make_tuple(1, 15.4, "James");
+get<0>(t1) // 访问第一个元素
+get<1>(t1) // 访问第二个元素
+get<2>(t1) // 访问第三个元素
+    
+
 ```
 
-
-
-
-
-
-
-### 3.排序
+#### 2.0 
 
 ```c++
-//sort
+#include<algorithm>
+// 1.排序 //
 
 //数组
 int a[10];
 sort(a, a +10);  //10最后一位不取
 sort(a, a +10, greater<int>) //默认升序，greater<int>表示降序
+    
 //vector、set
 vector<string> v;
-sort(v.begin(), v.end());  //10最后一位不取
+sort(v.begin(), v.end());    //正向排序 小 -> 大
+sort(v.rbegin(), v.rend());  //逆向排序 大 -> 小
 
 
 //自定义
-bool cmp(int num1, int num2) {
+bool cmp(int num1, int num2) { // 基础类型
     return num1 > num2;     // 可以简单理解为 > 降序排列;  <  升序排列
 }
 sort(a, a + 10, cmp);  // 使用自定义排序函数
+
+
 
 //自定义结构体
 struct Student {    // 学生结构体
@@ -366,7 +406,28 @@ bool cmp(Student s1, Student s2) {  // 自定义排序
     }
     return s1.name < s2.name;   // 否则按照姓名升序排列
 }
+sort(v.begin(), v.end(), cmp);  // 使用自定义排序函数
 
+
+// 自定义STL
+bool cmp(tuple<int, string ,int> t1, tuple<int, string ,int> t2) {  // 自定义排序
+    if (get<2>(t1) != get<2>(t2)) {     // 如果价格不同
+        return get<2>(t1) > get<2>(t2); // 则按照价格降序排列
+    }
+    return get<1>(t1) < get<1>(t2);   // 否则按照名字升序排列
+}
+vector<tuple<int, string ,int>> v{{1, "c", 1} {2, "b", 1} {3, "a", 3} // 编号，名字，价格
+sort(v.begin(), v.end(), cmp);  // 使用自定义排序函数
+
+
+// 2.倒置 //                                  
+reverse(a.begin(),a.end()); //对a中的从a.begin()（包括它）到a.end()（不包括它）的元素倒置，但不排列
+                                  
+// 3.复制 //
+copy(a.begin(),a.end(),b.begin()+1); //把a中的从a.begin()（包括它）到a.end()（不包括它）的元素复制到b中，从b.begin()+1的位置（包括它）开始复制，覆盖掉原有元素
+                                  
+// 4.查找 //
+find(a.begin(),a.end(),10); //在a中的从a.begin()（包括它）到a.end()（不包括它）的元素中查找10，若存在返回其在向量中的位置                                  
 ```
 
 ### 4.string
@@ -557,7 +618,7 @@ char * G()
 {
 	char g[20] = "Beijing";
 	return g;
-}// error：函数中的局部变量存放在stack中，函数执行完成之后会自动释放，因此不应将局 部变量的指针作为返回值。
+}// error：函数中的局部变量存放在stack中，函数执行完成之后会自动释放，因此不应将局部变量的指针作为返回值。
 
 
 
@@ -706,8 +767,6 @@ stack
 				静态成员函数和静态数据成员一样，它们都属于类的静态成员，它们都不是对象成员。在静态成员函数的实现中可以引用类中					说明的静态成员。而如果静态成员函数中要引用非静态成员时，可通过对象来引用。
     			调用静态成员函数使用如下格式：<类名>::<静态成员函数名>(<参数表>);
 
-
-如果基类的析构函数是虚函数，那么就会继续调用派生类的析构函数~Derived()；
     
 //2. inline
 普通函数频繁调用的过程消耗栈空间，每次调用函数都需要压栈，然后出栈。
@@ -1094,6 +1153,10 @@ C++中，虚函数是动态绑定的，但函数的缺省参数却是在编译�
 TEST()当您想要为静态或全局函数或简单类编写单元测试时
 TEST_F()当您需要访问单元测试中的对象和子例程时
 TEST_P()当您想要使用参数编写测试时
+        
+//4. 静态测试和动态测试      
+    静态测试是指测试不运行的部分：只是检查和审阅,如规范测试、软件模型测试、文档测试等。
+    动态测试是通常意义上的测试，也就是运行和使用软件。
 ```
 
 ### GDB
@@ -1347,6 +1410,24 @@ int b = -20;
 /********************************************************************/
 
 
+/********************************************************************/
+	uint32_t i =10;
+    cout << i << endl;  // 10
+    cout << sizeof(++i) << endl;  // 4
+    cout << i << endl;  // 10 sizeof里面的++i没有执行
+/********************************************************************/
+
+
+/********************************************************************/
+	int i = 0;
+    int j = 0;
+    for (i = 10; i >= 0; --i) {
+        for (j = 10; j == 1; --j) {
+            i = j;
+        }
+    }
+    cout << i << " " << j;  // -1 10
+/********************************************************************/
 ```
 
 
