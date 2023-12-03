@@ -227,6 +227,8 @@ printf("%d",num); //%d、%f、%s、%c 是最常用的，它们分别是输出整
 #include<vector>
 vector<int> v[100];
 vector<int> v(26, 0);
+vector<int> v1 = v;
+vector<int> v2(v);
 
 v.push_back(x) // 就是在vector容器v后面添加一个元素x
 v.pop_back()   // 可以删除vector的尾元素
@@ -260,8 +262,10 @@ Set关联式容器，也叫集合，集合里是不能有重复的元素，以�
 set<int> s;  // 创建set
 s.insert(1); // 插入元素
 
-*s.begin()	//返回set容器的第一个元素，set_.begin()是第一个指向该元素的迭代器，可以理解为指针，通过*访问元素
-*s.end() 　　　//返回set容器的最后一个元素
+*s.begin()	 //返回set容器的第一个元素，set_.begin()是第一个指向该元素的迭代器，可以理解为指针，通过*访问元素
+*s.end() 　　 //返回set容器的最后一个元素
+*s.rbegin()  //返回指向集合中最后一个元素的反向迭代器
+*s.rend()    //返回指向集合中第一个元素的反向迭代器
 s.empty() 　　//判断set容器是否为空
 s.size() 　　 //返回当前set容器中的元素个数
 
@@ -277,6 +281,14 @@ set<int>::iterator it;
 for(it=s.begin();it!=s.end();it++){
     cout<<*it<<" ";
 }
+
+
+# multiset
+//能时刻保证序列中的数是有序的，而且序列中可以存在重复的数
+multiset<int> s; // 存有序可重复：1 1 2 3 4 5 5
+s.erase(x)   // 删除所有元素x
+auto it = s.find(x);
+s.erase(it) // 这里是删除其中的一个x; 删除的是一个位置
 ```
 
 #### 2.3 map
@@ -343,6 +355,21 @@ struct cmp {
     }
 };
 priority_queue<fruit,vector<fruit>,cmp> q; // 队首q.top().price最小
+```
+
+
+
+#### 2.5 stack 
+
+栈是基本的数据结构之一,特点是 **先进后出**
+
+```c++
+stack<int> st; 
+st.push(x);     // 将x压入栈顶
+st.top();       // 返回栈顶元素
+st.pop();       // 删除栈顶元素
+st.size();      // 返回栈中元素的个数
+st.empyt();     // 检查栈是否为空
 ```
 
 
