@@ -437,6 +437,8 @@ sort(v.begin(), v.end(), cmp);  // 使用自定义排序函数
 
 
 // 自定义STL
+// 自定义函数cmp需要放在类之外，如果放类里面需要加static，因为隐藏带有this，sort函数无法匹配。
+// 如果需要成员变量，考虑lambda捕获 auto cmp = [a_, b_]();
 bool cmp(tuple<int, string ,int> t1, tuple<int, string ,int> t2) {  // 自定义排序
     if (get<2>(t1) != get<2>(t2)) {     // 如果价格不同
         return get<2>(t1) > get<2>(t2); // 则按照价格降序排列
