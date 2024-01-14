@@ -251,6 +251,9 @@ v[1];  // 下标
 
 //倒序
 reverse(v.begin(). v.end())
+    
+// 查找
+if (std::find(v.begin(), v.end(), key) != v.end())
 ```
 
 #### 2.2 set
@@ -335,12 +338,22 @@ q.empty()  // 如果队列空则返回true
 q.front()  // 返回队列中的第一个元素
 q.back()   // 返回队列中最后一个元素
     
+
+// 遍历
+int size = q.size();
+for(int i = 0; i < size; i++) { // 无法用迭代器变量，只能在原本size下，先push，再pop
+    cout << q.front() << endl;
+    q.push(q.front());
+    q.pop();
+}    
+    
     
 //优先队列 priority_queue
 //priority_queue<Type, Container, Functional>
 priority_queue<int> q;  // 默认vector，队首q.top()最大
 priority_queue<int,vector<int>,less<int>> q;	// 队首q.top()最大
 priority_queue<int,vector<int>,greater<int>>q;  // 队首q.top()最小
+priority_queue<int, vector<int>, decltype<&cmp>> q(cmp); // cmp为比较函数
 // pair
 priority_queue<pair<int, int>>q;  // pair 先比较第一个int，再比较第二int
 // struct
@@ -351,7 +364,7 @@ struct fruit {
 struct cmp {
     bool operator ()(fruit fl,fruit f2)
     {
-        return f1.price > f2.price;
+        return f1.price > f2.price; // true表示 优先级 f1 < f2, f2放前面 （容易混淆）
     }
 };
 priority_queue<fruit,vector<fruit>,cmp> q; // 队首q.top().price最小
@@ -395,6 +408,11 @@ get<1>(t1) // 访问第二个元素
 get<2>(t1) // 访问第三个元素
     
 
+// emplace 对比push，支持隐式构造
+vector<vector<int>> v;
+v.emplace_back(vector<int>{1,2,3});
+vector<pair<int, int>> v;
+v.emplace_back(1,2);
 ```
 
 #### 2.0 
@@ -612,6 +630,29 @@ c = i + '0'; //ascii码
 
 // char -> int
 i = c - '0'
+    
+    
+// atoi(), atol()
+int i = atoi("123", nullptr, 10); // 将10进制的srting转为10进制int
+int i = atoi("FF", nullptr, 16); // 将16进制的srting转为10进制int
+int i = atoi("10101010", nullptr, 2); // 将2进制的srting转为10进制int
+long int l = atoi("12345678", nullptr, 10); // 将10进制的srting转为10进制long
+
+
+// bitset
+#include <bitset>
+bitset<N> bitset1; // 创建一个长度为 N 的 bitset，所有位都被初始化为 0
+bitset<N> bitset2(value); // 使用二进制整数 value 初始化一个长度为 N 的 bitset
+bitset<N> bitset3(string); // 使用二进制字符串 string 初始化一个长度为 N 的 bitset
+bitset<N> bitset4(bitset); // 使用另一个 bitset 初始化一个长度为 N 的 bitset
+
+bitset<8> bs(10);          // 00001010
+bitset<8> bs (0x0A);       // 00001010
+bitset<8> bs ("00001010"); // 00001010
+
+string str = bs.to_string();
+int i = bs.to_ulong();
+long int l = bs.to_ullong();
 ```
 
 
